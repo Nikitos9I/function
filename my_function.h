@@ -8,9 +8,11 @@
 #include <memory>
 #include <exception>
 #include <algorithm>
+#include <cassert>
+#include <cstring>
 
 using std::unique_ptr;
-const unsigned int BUFFER_SIZE = 16;
+const unsigned int BUFFER_SIZE = 64;
 
 template <typename noType>
 class my_function;
@@ -18,26 +20,25 @@ class my_function;
 template <typename returnType, typename ... argsTypes>
 class my_function <returnType(argsTypes ...)> {
 public:
-    my_function() noexcept : pFunc_(nullptr), is_small(false) {}
+    my_function() noexcept : is_small(false), pFunc_(nullptr) {}
 
-    my_function(std::nullptr_t n) noexcept : pFunc_(nullptr), is_small(false) {}
+    my_function(std::nullptr_t) noexcept : is_small(false), pFunc_(nullptr) {}
 
     template <typename funcType>
-    my_function(funcType f) {
+    my_function(funcType f) : pFunc_(nullptr) {
         if (sizeof(funcType) <= BUFFER_SIZE) {
             is_small = true;
+            myCaller_ = nullptr;
             new (buffer) free_holder<funcType>(f);
         } else {
             is_small = false;
-            pFunc_ = nullptr;
             myCaller_ = std::make_unique<free_holder<funcType>>(f);
         }
     }
 
     returnType operator()(argsTypes ... args) const {
         if (is_small) {
-            auto bufc = (holder_base*)(buffer);
-            return bufc->call(std::forward<argsTypes>(args) ...);
+            return ((holder_base*)(buffer))->call(std::forward<argsTypes>(args) ...);
         } else {
             if (pFunc_ != nullptr)
                 return pFunc_(std::forward<argsTypes>(args) ...);
@@ -107,6 +108,8 @@ public:
         return is_small || myCaller_ != nullptr || pFunc_ != nullptr;
     }
 
+    ~my_function() = default;
+
 private:
     class holder_base {
     public:
@@ -124,21 +127,23 @@ private:
     public:
         free_holder(funcType inFunc) : holder_base(), myFunc(inFunc) {}
 
-        virtual returnType call(argsTypes ... args) {
+        virtual returnType call(argsTypes ... args) override {
             return myFunc(std::forward<argsTypes>(args) ...);
         }
 
-        virtual unique_ptr<holder_base> clone() {
+        virtual unique_ptr<holder_base> clone() override {
             return unique_ptr<holder_base>(new free_holder<funcType>(myFunc));
         }
+
+        ~free_holder() = default;
     private:
         funcType myFunc;
     };
 
 private:
     unique_ptr<holder_base> myCaller_;
-    bool is_small;
     char buffer[BUFFER_SIZE];
+    bool is_small;
     returnType (*pFunc_) (argsTypes ...);
 };
 

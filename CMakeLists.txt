@@ -3,4 +3,5 @@ project(J)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(J main.cpp test.h my_function.h)
+add_executable(J main.cpp my_function.h)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -D__GLIBCXX_DEBUG -Wall -Wextra")
