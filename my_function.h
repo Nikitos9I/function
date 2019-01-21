@@ -125,7 +125,7 @@ private:
     template<typename funcType>
     class free_holder : public holder_base {
     public:
-        free_holder(funcType inFunc) : holder_base(), myFunc(inFunc) {}
+        free_holder(funcType & inFunc) : holder_base(), myFunc(std::move(inFunc)) {}
 
         virtual returnType call(argsTypes ... args) override {
             return myFunc(std::forward<argsTypes>(args) ...);

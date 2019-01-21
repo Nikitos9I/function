@@ -1,0 +1,3 @@
+/Users/nikitos/dev/std--function/CMakeFiles/rebuild_cache.dir
+/Users/nikitos/dev/std--function/CMakeFiles/edit_cache.dir
+/Users/nikitos/dev/std--function/CMakeFiles/J.dir
