@@ -37,6 +37,11 @@ void test_nullptrConstructor() {
     Function<void(void)> f(nullptr);
 }
 
+void test_nullptrFunction() {
+    Function<void(void)> f(nullptr);
+    Function<void(void)> p(f);
+}
+
 void test_moveConstructor() {
     Function<int(void)> b(bar);
     Function<int(void)> second(std::move(b));
@@ -148,6 +153,7 @@ void all_test() {
     test_defaultConstructor();
     test_copyConstructor();
     test_nullptrConstructor();
+    test_nullptrFunction();
     test_moveConstructor();
     test_operatorAssignment();
     test_moveAssignment();

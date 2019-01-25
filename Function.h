@@ -41,10 +41,10 @@ public:
     Function(funcType f) {
         if (sizeof(funcType) <= BUFFER_SIZE) {
             type = 0;
-            new (buffer) free_holder<funcType>(std::move(f));
+            new (buffer) free_holder<funcType>(f);
         } else {
             type = 1;
-            caller = std::make_unique<free_holder<funcType>>(std::move(f));
+            caller = std::make_unique<free_holder<funcType>>(f);
         }
     }
 
