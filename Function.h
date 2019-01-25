@@ -119,13 +119,16 @@ public:
     }
 
     ~Function() {
-        if (type == 0) {
-            auto p = reinterpret_cast<holder_base *>(const_cast<char *>(buffer));
-            p->~holder_base();
-        } else if (type == 1) {
-            caller.reset();
-        } else if (type == 2) {
-            pFunc = nullptr;
+        switch (type) {
+            case 0:
+                (reinterpret_cast<holder_base *>(const_cast<char *>(buffer)))->~holder_base();
+                break;
+            case 1:
+                caller.reset();
+            case 2:
+                pFunc = nullptr;
+            default:
+                break;
         }
     }
 
