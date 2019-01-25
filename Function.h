@@ -125,8 +125,10 @@ public:
                 break;
             case 1:
                 caller.reset();
+                break;
             case 2:
                 pFunc = nullptr;
+                break;
             default:
                 break;
         }
