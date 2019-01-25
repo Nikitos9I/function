@@ -50,6 +50,7 @@ public:
     my_function(const my_function & other) {
         is_small = other.is_small;
         if (other.is_small) {
+            memset(buffer, 0, BUFFER_SIZE);
             memcpy(buffer, other.buffer, BUFFER_SIZE);
         } else {
             if (!other) {
@@ -68,6 +69,7 @@ public:
     my_function(my_function && other) noexcept {
         is_small = other.is_small;
         if (other.is_small) {
+            memset(buffer, 0, BUFFER_SIZE);
             memcpy(buffer, other.buffer, BUFFER_SIZE);
         } else {
             if (!other) {
@@ -97,11 +99,7 @@ public:
         std::swap(myCaller_, other.myCaller_);
         std::swap(pFunc_, other.pFunc_);
         std::swap(is_small, other.is_small);
-
-        char tmpBuffer[BUFFER_SIZE];
-        memcpy(tmpBuffer, buffer, BUFFER_SIZE);
-        memcpy(buffer, other.buffer, BUFFER_SIZE);
-        memcpy(other.buffer, tmpBuffer, BUFFER_SIZE);
+        std::swap(buffer, other.buffer);
     }
 
     explicit operator bool() const noexcept {
