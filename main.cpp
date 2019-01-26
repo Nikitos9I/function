@@ -22,6 +22,10 @@ double pi() {
     return 3.14;
 }
 
+double qqe(double a) {
+    return a;
+}
+
 void test_defaultConstructor() {
     Function<int(void)> f(foo);
     assert(f() == 1);
@@ -128,8 +132,6 @@ void test_copy_small_object() {
     assert(g() == -1);
 }
 
-
-
 void NIKITOZZZZ_test() {
     int foo = 1;
     double bar = 3;
@@ -149,6 +151,21 @@ void NIKITOZZZZ_test() {
     f(std::cout);
 }
 
+size_t res;
+
+struct Func {
+    size_t operator() () {
+        res = 70;
+        return res;
+    }
+};
+
+void test70() {
+    Func F12;
+    Function<size_t ()> f12(F12);
+    assert(f12() == 70);
+}
+
 void all_test() {
     test_defaultConstructor();
     test_copyConstructor();
@@ -164,6 +181,7 @@ void all_test() {
     test_copy();
     test_copy_small_object();
     NIKITOZZZZ_test();
+    test70();
     std::cout << "OK!";
 }
 
